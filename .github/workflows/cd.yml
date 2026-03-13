@@ -1,0 +1,26 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact from CI
+        uses: actions/download-artifact@v3
+        with:
+          name: hello-file
+
+      - name: Zip hello.py
+        run: zip hello.zip hello.py
+
+      - name: Upload zip artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: zipped-hello
+          path: hello.zip
